@@ -43,7 +43,7 @@ fun Battle(navController: NavController, name: String, imageUrl: String?) {
     var battlesWon by remember { mutableStateOf(0) }
     var userHealth by remember { mutableStateOf(100) }
     var opponentHealth by remember { mutableStateOf(100) }
-    val maxHealth = 100 // Define a saúde máxima do Pokémon
+    val maxHealth = 100 
     var gameOver by remember { mutableStateOf(false) }
     var gameResultMessage by remember { mutableStateOf("") }
     var userAttackDamage by remember { mutableStateOf(0) }
