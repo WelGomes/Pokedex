@@ -81,7 +81,6 @@ fun Home(navController: NavController) {
         items(pokemonList.chunked(2)) { rowPokemons ->
             LazyRow {
                 items(rowPokemons) { pokemon ->
-                    //PokemonImage(pokemon = pokemon)
                     PokemonImage(navController = navController, pokemon = pokemon)
                 }
             }
