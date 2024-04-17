@@ -19,9 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.pokedex.model.Pokemon
 import com.example.pokedex.network.Endpoint
@@ -190,4 +192,14 @@ fun Battle(navController: NavController, name: String, imageUrl: String?) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun BattlePreview() {
+    Battle(
+        navController = rememberNavController(),
+        name = "Pikachu",
+        imageUrl = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
+    )
 }

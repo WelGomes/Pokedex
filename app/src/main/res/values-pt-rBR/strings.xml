@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pokedex</string>
     <string name="title_activity_pokemons">Pokemons</string>
     <string name="title_activity_battle">Battle</string>
-    <string name="empty_list">The list is empty!</string>
+    <string name="empty_list">A lista está vazia!</string>
 </resources>

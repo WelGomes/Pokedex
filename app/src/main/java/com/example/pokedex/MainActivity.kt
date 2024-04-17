@@ -1,6 +1,5 @@
 package com.example.pokedex
 
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,10 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.pokedex.ui.theme.pokemon_list.PokemonList
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = "home"
                     ){
-                        Home(navController)
+                        PokemonList(navController)
                     }
 
                     composable(
@@ -43,7 +44,6 @@ class MainActivity : ComponentActivity() {
                         Battle(navController, name, imageUrl)
                     }
                 }
-
             }
         }
     }
