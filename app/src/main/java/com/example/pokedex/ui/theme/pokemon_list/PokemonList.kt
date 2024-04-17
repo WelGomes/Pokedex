@@ -1,4 +1,4 @@
-package com.example.pokedex
+package com.example.pokedex.ui.theme.pokemon_list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,75 +14,87 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.example.pokedex.R
 import com.example.pokedex.model.Pokemon
-import com.example.pokedex.network.Endpoint
-import com.example.pokedex.network.NetworkUtils
-import kotlinx.coroutines.launch
 
 @Composable
-fun Home(navController: NavController) {
+fun PokemonList(
+    navController: NavController,
+) {
+    val viewModel = viewModel<PokemonListViewModel>()
+    val state = viewModel.pokemonState.collectAsState().value
 
     Image(painter = painterResource(id = R.drawable.pokemonsimbolo),
         contentDescription = " ",
         modifier = Modifier.fillMaxSize()
     )
 
-    val retrofitClient = NetworkUtils
-        .getRetrofitInstance("https://pokeapi.co/api/v2/")
-
-    val pokeApi = retrofitClient.create(Endpoint::class.java)
-
-    val context = LocalContext.current
-
-    var pokemonList by remember { mutableStateOf<List<Pokemon>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-    var isError by remember { mutableStateOf(false) }
-
-    val scope = rememberCoroutineScope()
-
-    DisposableEffect(context) {
-        scope.launch {
-            try {
-                val response = pokeApi.getPokemons(100)
-                pokemonList = response.results
-                isLoading = false
-            } catch (e: Exception) {
-                isError = true
+    when (state) {
+        is PokemonListViewState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
         }
-        onDispose { }
-    }
 
+        is PokemonListViewState.Error -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.message,
+                    color = Color.Red,
+                    fontSize = 20.sp
+                )
+            }
+        }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
-    ) {
-        items(pokemonList.chunked(2)) { rowPokemons ->
-            LazyRow {
-                items(rowPokemons) { pokemon ->
-                    PokemonImage(navController = navController, pokemon = pokemon)
+        is PokemonListViewState.Success -> {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            ) {
+                items(state.pokemonList.chunked(2)) { rowPokemons ->
+                    LazyRow {
+                        items(rowPokemons) { pokemon ->
+                            PokemonImage(navController = navController, pokemon = pokemon)
+                        }
+                    }
                 }
+            }
+        }
+
+        PokemonListViewState.Empty -> {
+            Column {
+                Text(
+                    text = stringResource(R.string.empty_list),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 30.sp),
+                    color = Color.White,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+
             }
         }
     }
@@ -124,4 +136,10 @@ fun PokemonImage(navController: NavController, pokemon: Pokemon) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
+}
+
+@Preview
+@Composable
+fun HomePreview() {
+    PokemonList(navController = NavController(LocalContext.current))
 }
